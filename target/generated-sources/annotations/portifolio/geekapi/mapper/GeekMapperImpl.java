@@ -14,7 +14,7 @@ import portifolio.geekapi.entity.SuperHero;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-09-24T20:56:04-0300",
+    date = "2021-09-28T00:47:05-0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.12 (Oracle Corporation)"
 )
 @Component

@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class GeekNotFoundException extends Exception {
 
     public GeekNotFoundException(Long id) {
-        super("Geek not found Id --> " + id);
+        super(String.format("Geek not found Id --> ", id));
+    }
+    public GeekNotFoundException(String name) {
+        super(String.format("Geek not found name --> ", name));
     }
 }

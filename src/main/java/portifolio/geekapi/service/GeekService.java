@@ -39,6 +39,11 @@ public class GeekService {
         return geekMapper.toDTO(geek);
     }
 
+    public GeekDTO findByName(String geekName) throws GeekNotFoundException {
+        Geek geek = verifyIfExists(geekName);
+        return geekMapper.toDTO(geek);
+    }
+
     public void delete(Long id) throws GeekNotFoundException {
         verifyIfExists(id);
         geekRepository.deleteById(id);
@@ -54,6 +59,11 @@ public class GeekService {
     private Geek verifyIfExists(Long id) throws GeekNotFoundException {
         return geekRepository.findById(id)
                 .orElseThrow(() -> new GeekNotFoundException(id));
+    }
+
+    private Geek verifyIfExists(String name) throws GeekNotFoundException {
+        return geekRepository.findByName(name)
+                .orElseThrow(() -> new GeekNotFoundException(name));
     }
 
     private MessageResponseDTO createMessageResponse(Long id, String message) {

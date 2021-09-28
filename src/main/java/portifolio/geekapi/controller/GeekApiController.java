@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/geek")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class GeekApiController {
+public class GeekApiController implements GeekApiControllerDocs {
 
     private GeekService geekService;
 
@@ -36,6 +36,11 @@ public class GeekApiController {
     public GeekDTO findById(@PathVariable Long id) throws GeekNotFoundException {
         return geekService.findById(id);
     }
+
+    @GetMapping("/{name}")
+    public GeekDTO findByName(@PathVariable String geekName) throws GeekNotFoundException {
+        return geekService.findByName(geekName);
+    };
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
