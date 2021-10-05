@@ -3,6 +3,7 @@ package portifolio.geekapi.service;
 import portifolio.geekapi.dto.request.GeekDTO;
 import portifolio.geekapi.dto.response.MessageResponseDTO;
 import portifolio.geekapi.entity.Geek;
+import portifolio.geekapi.exception.GeekAlreadyRegisteredException;
 import portifolio.geekapi.exception.GeekNotFoundException;
 import portifolio.geekapi.mapper.GeekMapper;
 import portifolio.geekapi.repository.GeekRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,12 +21,20 @@ public class GeekService {
 
     private GeekRepository geekRepository;
 
-    private final GeekMapper geekMapper;
+    //private final GeekMapper geekMapper;
+    private final GeekMapper geekMapper = GeekMapper.INSTANCE;
 
     public MessageResponseDTO createGeek(GeekDTO geekDTO) {
         Geek geekToSave = geekMapper.toModel(geekDTO);
         Geek savedGeek = geekRepository.save(geekToSave);
         return createMessageResponse(savedGeek.getId(), "Geek created at ID --> ");
+    }
+
+    public GeekDTO createGeekByName(GeekDTO geekDTO) throws GeekAlreadyRegisteredException {
+        verifyIfIsAlreadyRegistered(geekDTO.getGeekName());
+        Geek geek = geekMapper.toModel(geekDTO);
+        Geek savedGeek = geekRepository.save(geek);
+        return geekMapper.toDTO(savedGeek);
     }
 
     public List<GeekDTO> listAll() {
@@ -54,6 +64,13 @@ public class GeekService {
         Geek geekToUpdate = geekMapper.toModel(geekDTO);
         Geek updatedGeek = geekRepository.save(geekToUpdate);
         return createMessageResponse(updatedGeek.getId(), "Geek updated at ID --> ");
+    }
+
+    private void verifyIfIsAlreadyRegistered(String geekName) throws GeekAlreadyRegisteredException {
+        Optional<Geek> optSavedGeek = geekRepository.findByName(geekName);
+        if (optSavedGeek.isPresent()) {
+            throw new GeekAlreadyRegisteredException(geekName);
+        }
     }
 
     private Geek verifyIfExists(Long id) throws GeekNotFoundException {
